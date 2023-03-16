@@ -45,6 +45,12 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
             icon: const Icon(
               Icons.more_vert,
             ),
+          ),
+          Badge(
+            child: IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.shopping_cart),
+            ),
           )
         ],
       ),
