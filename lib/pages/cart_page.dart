@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/provider/orders.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_shop_app/provider/cart.dart' show Cart;
+import 'package:flutter_shop_app/provider/orders.dart';
 import 'package:flutter_shop_app/widgets/cart_item.dart';
 
 class CartPage extends StatelessWidget {
@@ -34,7 +34,7 @@ class CartPage extends StatelessWidget {
                   const Spacer(),
                   Chip(
                     label: Text(
-                      '\$${cart.totalAmount}',
+                      '\$${cart.totalAmount.toStringAsFixed(2)}',
                       style: const TextStyle(
                         color: Colors.white,
                       ),
