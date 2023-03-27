@@ -1,11 +1,12 @@
-// ignore_for_file: prefer_final_fields
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_shop_app/provider/product.dart';
 
 class Products with ChangeNotifier {
   List<Product> _items = [
-    Product(
+    /* Product(
       id: 'p1',
       title: 'Red Shirt',
       description: 'A red shirt - it is pretty red!',
@@ -36,15 +37,10 @@ class Products with ChangeNotifier {
       price: 49.99,
       imageURL:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),
+    ), */
   ];
 
-  /* var _showFavoriteOnly = false; */
-
   List<Product> get items {
-    /* if (_showFavoriteOnly) {
-      return _items.where((prodItem) => prodItem.isFavorite).toList();
-    } */
     return [..._items];
   }
 
@@ -56,18 +52,72 @@ class Products with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
-  /* void showFavoritesOnly() {
-    _showFavoriteOnly = true;
-    notifyListeners();
+  Future<void> fetchAndSetProducts() async {
+    var url = Uri.https(
+        'shop-app-felipebss-default-rtdb.firebaseio.com', '/products.json');
+    try {
+      final response = await http.get(url);
+      final extractedData = jsonDecode(response.body) as Map<String, dynamic>;
+      final List<Product> loadedProducts = [];
+      extractedData.forEach((key, value) {
+        loadedProducts.add(
+          Product(
+            id: key,
+            title: value['title'],
+            description: value['description'],
+            price: value['price'],
+            imageURL: value['imageURL'],
+            isFavorite: value['isFavorite'],
+          ),
+        );
+      });
+      _items = loadedProducts;
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
   }
 
-  void showAll() {
-    _showFavoriteOnly = false;
-    notifyListeners();
-  } */
+  Future<void> addProduct(Product product) async {
+    var url = Uri.https(
+        'shop-app-felipebss-default-rtdb.firebaseio.com', '/products.json');
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'imageURL': product.imageURL,
+          'price': product.price,
+          'isFavorite': product.isFavorite,
+        }),
+      );
+      final newProduct = Product(
+        id: jsonDecode(response.body)['name'],
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        imageURL: product.imageURL,
+      );
+      _items.add(newProduct);
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-  void addProduct() {
-    //_items.add(value);
+  void updateProduct(String id, Product newProduct) {
+    final prodIndex = _items.indexWhere((prod) => prod.id == id);
+    if (prodIndex >= 0) {
+      _items[prodIndex] = newProduct;
+      notifyListeners();
+    } else {
+      print('...');
+    }
+  }
+
+  void deleteProduct(String id) {
+    _items.removeWhere((prod) => prod.id == id);
     notifyListeners();
   }
 }

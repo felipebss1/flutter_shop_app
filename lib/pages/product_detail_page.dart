@@ -29,7 +29,7 @@ class ProductDetailPage extends StatelessWidget {
               width: double.infinity,
               child: Image.network(
                 loadedProduct.imageURL,
-                fit: BoxFit.cover,
+                fit: BoxFit.scaleDown,
               ),
             ),
             const SizedBox(
