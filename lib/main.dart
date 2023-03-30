@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop_app/pages/auth_page.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_shop_app/pages/cart_page.dart';
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
           ),
           fontFamily: 'Lato',
         ),
-        home: const ProductsOverviewPage(),
+        home: const AuthPage(),
         routes: {
           ProductDetailPage.routeName: (context) => const ProductDetailPage(),
           CartPage.routeName: (context) => const CartPage(),
@@ -54,3 +55,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+//Parou na 266 -> Não esquecer de ler!
