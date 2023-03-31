@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/pages/auth_page.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter_shop_app/pages/auth_page.dart';
 import 'package:flutter_shop_app/pages/cart_page.dart';
 import 'package:flutter_shop_app/pages/edit_product_page.dart';
 import 'package:flutter_shop_app/pages/orders_page.dart';
 import 'package:flutter_shop_app/pages/product_detail_page.dart';
-import 'package:flutter_shop_app/pages/products_overview_page.dart';
+//import 'package:flutter_shop_app/pages/products_overview_page.dart';
 import 'package:flutter_shop_app/pages/user_products_page.dart';
+import 'package:flutter_shop_app/provider/auth.dart';
 import 'package:flutter_shop_app/provider/cart.dart';
 import 'package:flutter_shop_app/provider/orders.dart';
 import 'package:flutter_shop_app/provider/products_provider.dart';
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (context) => Auth(),
+        ),
         ChangeNotifierProvider(
           create: (context) => Products(),
         ),
@@ -55,4 +59,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-//Parou na 266 -> Não esquecer de ler!
