@@ -54,7 +54,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    var url = Uri.https(
+    final url = Uri.https(
         'shop-app-felipebss-default-rtdb.firebaseio.com', '/products.json');
     try {
       final response = await http.get(url);
@@ -83,7 +83,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    var url = Uri.https(
+    final url = Uri.https(
         'shop-app-felipebss-default-rtdb.firebaseio.com', '/products.json');
     try {
       final response = await http.post(
