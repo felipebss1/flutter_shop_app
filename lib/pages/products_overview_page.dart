@@ -24,13 +24,6 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
   var _isInit = true;
   var _isLoading = false;
 
-  /*  @override
-  void initState() {
-    Future.delayed(Duration.zero)
-        .then((_) => Provider.of<Products>(context).fetchAndSetProducts());
-    super.initState();
-  } */
-
   @override
   void didChangeDependencies() {
     if (_isInit) {

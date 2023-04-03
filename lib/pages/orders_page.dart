@@ -12,7 +12,6 @@ class OrdersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /* final orderData = Provider.of<Orders>(context); */
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Orders'),

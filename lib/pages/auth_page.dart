@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -60,7 +61,7 @@ class AuthPage extends StatelessWidget {
                       child: const Text(
                         'My Shop',
                         style: TextStyle(
-                          color: Colors.black54,
+                          color: Colors.white,
                           fontSize: 50,
                           fontFamily: 'Anton',
                           fontWeight: FontWeight.normal,
@@ -101,6 +102,24 @@ class _AuthCardState extends State<AuthCard> {
 
   final _passwordController = TextEditingController();
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('An error ocurred'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       //Invalid!
@@ -110,12 +129,36 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       _isLoading = true;
     });
-    if (_authMode == AuthMode.login) {
-      //Log user in
-    } else {
-      await Provider.of<Auth>(context, listen: false)
-          .signUp(_authData['email']!, _authData['password']!);
+
+    try {
+      if (_authMode == AuthMode.login) {
+        await Provider.of<Auth>(context, listen: false).singIn(
+          _authData['email']!,
+          _authData['password']!,
+        );
+      } else {
+        await Provider.of<Auth>(context, listen: false)
+            .signUp(_authData['email']!, _authData['password']!);
+      }
+    } on HttpException catch (error) {
+      var errorMessage = 'Authentication failed';
+      if (error.toString().contains('EMAIL_EXISTS')) {
+        errorMessage = 'The email address is already in use';
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        errorMessage = 'This is not a valid email address';
+      } else if (error.toString().contains('WEAK_PASSWORD')) {
+        errorMessage = 'This password is too weak';
+      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+        errorMessage = 'Could not find a user with that email.';
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        errorMessage = 'Invalid Password';
+      }
+      _showErrorDialog(errorMessage);
+    } catch (e) {
+      const errorMessage = 'Could not authenticate. Please try again later.';
+      _showErrorDialog(errorMessage);
     }
+
     setState(() {
       _isLoading = false;
     });
@@ -204,7 +247,6 @@ class _AuthCardState extends State<AuthCard> {
                     onPressed: _submit,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
-                      //foregroundColor: ,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 30.0,
                         vertical: 8.0,

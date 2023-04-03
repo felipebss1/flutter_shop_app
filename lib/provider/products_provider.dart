@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:flutter_shop_app/provider/product.dart';
 
 class Products with ChangeNotifier {
@@ -41,6 +42,11 @@ class Products with ChangeNotifier {
     ), */
   ];
 
+  final String authToken;
+  final String userId;
+
+  Products(this.authToken, this.userId, this._items);
+
   List<Product> get items {
     return [..._items];
   }
@@ -54,14 +60,18 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    final url = Uri.https(
-        'shop-app-felipebss-default-rtdb.firebaseio.com', '/products.json');
+    var url = Uri.https('shop-app-felipebss-default-rtdb.firebaseio.com',
+        '/products.json', {'auth': authToken});
     try {
       final response = await http.get(url);
       final extractedData = jsonDecode(response.body) as Map<String, dynamic>?;
       if (extractedData == null) {
         return;
       }
+      url = Uri.https('shop-app-felipebss-default-rtdb.firebaseio.com',
+          '/userFavorites/$userId.json', {'auth': authToken});
+      final favoriteResponse = await http.get(url);
+      final favoriteData = jsonDecode(favoriteResponse.body);
       final List<Product> loadedProducts = [];
       extractedData.forEach((key, value) {
         loadedProducts.add(
@@ -71,7 +81,7 @@ class Products with ChangeNotifier {
             description: value['description'],
             price: value['price'],
             imageURL: value['imageURL'],
-            isFavorite: value['isFavorite'],
+            isFavorite: favoriteData?[key] ?? false,
           ),
         );
       });
@@ -83,8 +93,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    final url = Uri.https(
-        'shop-app-felipebss-default-rtdb.firebaseio.com', '/products.json');
+    final url = Uri.https('shop-app-felipebss-default-rtdb.firebaseio.com',
+        '/products.json', {'auth': authToken});
     try {
       final response = await http.post(
         url,
@@ -93,7 +103,6 @@ class Products with ChangeNotifier {
           'description': product.description,
           'imageURL': product.imageURL,
           'price': product.price,
-          'isFavorite': product.isFavorite,
         }),
       );
       final newProduct = Product(
@@ -114,7 +123,7 @@ class Products with ChangeNotifier {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
       final url = Uri.https('shop-app-felipebss-default-rtdb.firebaseio.com',
-          '/products/$id.json');
+          '/products/$id.json', {'auth': authToken});
       await http.patch(
         url,
         body: jsonEncode({
@@ -130,8 +139,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final url = Uri.https(
-        'shop-app-felipebss-default-rtdb.firebaseio.com', '/products/$id.json');
+    final url = Uri.https('shop-app-felipebss-default-rtdb.firebaseio.com',
+        '/products/$id.json', {'auth': authToken});
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
     Product? existingProduct = _items[existingProductIndex];
     _items.removeAt(existingProductIndex);
