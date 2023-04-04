@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:numeral/numeral.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_shop_app/provider/cart.dart';
@@ -77,7 +78,7 @@ class CartItem extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(5),
                 child: FittedBox(
-                  child: Text('\$$price'),
+                  child: Text('\$${Numeral(price).format()}'),
                 ),
               ),
             ),
