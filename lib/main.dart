@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop_app/pages/splash_page.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_shop_app/pages/auth_page.dart';
@@ -58,7 +59,16 @@ class MyApp extends StatelessWidget {
             ),
             fontFamily: 'Lato',
           ),
-          home: auth.isAuth ? const ProductsOverviewPage() : const AuthPage(),
+          home: auth.isAuth
+              ? const ProductsOverviewPage()
+              : FutureBuilder(
+                  future: auth.tryAutoLogin(),
+                  builder: (context, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? const SplashPage()
+                          : const AuthPage(),
+                ),
           routes: {
             ProductDetailPage.routeName: (context) => const ProductDetailPage(),
             CartPage.routeName: (context) => const CartPage(),
