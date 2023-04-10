@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/pages/splash_page.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter_shop_app/helpers/custom_route.dart';
 import 'package:flutter_shop_app/pages/auth_page.dart';
 import 'package:flutter_shop_app/pages/cart_page.dart';
 import 'package:flutter_shop_app/pages/edit_product_page.dart';
 import 'package:flutter_shop_app/pages/orders_page.dart';
 import 'package:flutter_shop_app/pages/product_detail_page.dart';
 import 'package:flutter_shop_app/pages/products_overview_page.dart';
+import 'package:flutter_shop_app/pages/splash_page.dart';
 import 'package:flutter_shop_app/pages/user_products_page.dart';
 import 'package:flutter_shop_app/provider/auth.dart';
 import 'package:flutter_shop_app/provider/cart.dart';
@@ -53,12 +54,15 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'My Shop',
           theme: ThemeData(
-            colorScheme:
-                ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(
-              secondary: Colors.deepOrange,
-            ),
-            fontFamily: 'Lato',
-          ),
+              colorScheme:
+                  ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(
+                secondary: Colors.deepOrange,
+              ),
+              fontFamily: 'Lato',
+              pageTransitionsTheme: PageTransitionsTheme(builders: {
+                TargetPlatform.android: CustomPageTransitionBuilder(),
+                TargetPlatform.iOS: CustomPageTransitionBuilder(),
+              })),
           home: auth.isAuth
               ? const ProductsOverviewPage()
               : FutureBuilder(
