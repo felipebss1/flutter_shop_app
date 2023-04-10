@@ -130,7 +130,6 @@ class _AuthCardState extends State<AuthCard>
       parent: _controller!,
       curve: Curves.easeIn,
     ));
-    //_heightAnimation?.addListener(() => setState(() {}));
   }
 
   @override
@@ -159,7 +158,6 @@ class _AuthCardState extends State<AuthCard>
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
-      //Invalid!
       return;
     }
     _formKey.currentState!.save();
@@ -228,10 +226,7 @@ class _AuthCardState extends State<AuthCard>
           milliseconds: 300,
         ),
         curve: Curves.easeIn,
-        height: _authMode == AuthMode.signUp
-            ? 320
-            : 260, //Deixar esse trecho desse jeito!
-        //height: _heightAnimation!.value.height,
+        height: _authMode == AuthMode.signUp ? 320 : 260,
         constraints: BoxConstraints(
           minHeight: _authMode == AuthMode.signUp ? 320 : 260,
         ),
@@ -284,8 +279,8 @@ class _AuthCardState extends State<AuthCard>
                       position: _slideAnimation!,
                       child: TextFormField(
                         enabled: _authMode == AuthMode.signUp,
-                        decoration:
-                            const InputDecoration(labelText: 'Confirm Password'),
+                        decoration: const InputDecoration(
+                            labelText: 'Confirm Password'),
                         obscureText: true,
                         validator: _authMode == AuthMode.signUp
                             ? (value) {
